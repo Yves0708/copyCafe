@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -22,50 +23,7 @@ public class MainActivity extends Activity {
 	private Button[] cafebtns = new Button[8];
 	private TextView tv_order;
 	private TextView tv_money;
-	//咖啡名稱
-	private String[] cafeName={
-			"美式咖啡",
-			"招牌咖啡",
-			"海岩咖啡",
-			"拿鐵咖啡",
-			"義式咖啡",
-			"卡布奇諾",
-			"焦糖瑪奇朵",
-			"北海道醇濃奶茶"
-	};
-	//尺寸名稱
-	private String[] sizeName = {
-				"小杯",
-				"中杯",
-				"大杯"
-	};
-	//冰名稱
-		private String[] iceName = {
-					"熱飲",
-					"溫飲",
-					"去冰",
-					"半冰",
-					"冰正常"
-		};
-		//糖名稱
-				private String[] sugarName = {
-							"無糖",
-							"三分糖",
-							"半糖",
-							"七分糖",
-							"正常糖"
-				};
-	//咖啡價目表
-	private int[][] cafePrice={
-			{35,50,60},
-			{45,60,70},
-			{45,60,70},
-			{55,70,80},
-			{55,70,80},
-			{55,70,80},
-			{65,80,90},
-			{65,80,90}
-	};
+
 	private int radioButtonCheckedColor = Color.RED;
 	private int radioButtonUnCheckedColor = Color.BLACK;
 	//目前選擇的大小杯
@@ -74,6 +32,8 @@ public class MainActivity extends Activity {
 	private int iceIndex = 4;
 	//目前選擇的糖
 	private int sugarIndex = 4;
+	private Order order;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -99,18 +59,27 @@ public class MainActivity extends Activity {
 		icerb[3] = (RadioButton)findViewById(R.id.icerb4);
 		icerb[4] = (RadioButton)findViewById(R.id.icerb5);
 		cafebtns[0] =(Button) findViewById(R.id.cafebtn1);
+		cafebtns[0].setTag(0);
 		cafebtns[1] =(Button) findViewById(R.id.cafebtn2);
+		cafebtns[1].setTag(1);
 		cafebtns[2] =(Button) findViewById(R.id.cafebtn3);
+		cafebtns[2].setTag(2);
 		cafebtns[3] =(Button) findViewById(R.id.cafebtn4);
+		cafebtns[3].setTag(3);
 		cafebtns[4] =(Button) findViewById(R.id.cafebtn5);
+		cafebtns[4].setTag(4);
 		cafebtns[5] =(Button) findViewById(R.id.cafebtn6);
+		cafebtns[5].setTag(5);
 		cafebtns[6] =(Button) findViewById(R.id.cafebtn7);
+		cafebtns[6].setTag(6);
 		cafebtns[7] =(Button) findViewById(R.id.cafebtn8);
+		cafebtns[7].setTag(7);
 		tv_order =(TextView) findViewById(R.id.tv_order);
 		tv_money =(TextView) findViewById(R.id.tv_money);
 	}
 	
 	private void processControl(){
+		order  = new Order();
 		//設定 RadioGroup 改選的監聽
 		MyOnCheckedChangeListener myOnCheckedChangeListener = new MyOnCheckedChangeListener();
 		sizerg.setOnCheckedChangeListener(myOnCheckedChangeListener);
@@ -124,8 +93,10 @@ public class MainActivity extends Activity {
 		refreshCafeButton();
 		//設定CafeButton點選的監聽
 		MyOnClickListener myOnClickListener = new MyOnClickListener();
+		MyOnLongClickListener myOnLongClickListener = new MyOnLongClickListener();
 		for(Button cafebtn:cafebtns){
 			cafebtn.setOnClickListener(myOnClickListener);
+			cafebtn.setOnLongClickListener(myOnLongClickListener);//設置長按監聽器
 		}
 	}
 	//RadioGroup 改選的受委任者
@@ -149,41 +120,30 @@ public class MainActivity extends Activity {
 			if(temp_order.length()>0){
 				temp_order+="、";
 			}
-		int cafeType = -1;
-		switch(view.getId()){
-		case R.id.cafebtn1:
-			cafeType=0;
-			break;
-		case R.id.cafebtn2:
-			cafeType=1;
-			break;
-		case R.id.cafebtn3:
-			cafeType=2;
-			break;
-		case R.id.cafebtn4:
-			cafeType=3;
-			break;
-		case R.id.cafebtn5:
-			cafeType=4;
-			break;
-		case R.id.cafebtn6:
-			cafeType=5;
-			break;
-		case R.id.cafebtn7:
-			cafeType=6;
-			break;
-		case R.id.cafebtn8:
-			cafeType=7;
-			break;
-		
-		}
-			temp_order+=cafeName[cafeType]+"("+iceName[iceIndex]+"、"+sugarName[sugarIndex]+"、"+sizeName[sizeIndex]+")";
-			tv_order.setText(temp_order);
+		order.add(new Cafe(sizeIndex,iceIndex,sugarIndex,(Integer)view.getTag(),Cafe.cafePrice[(Integer)view.getTag()][sizeIndex]));
+			
+			tv_order.setText(order.toString());
+			tv_money.setText(String.valueOf(order.getSubtotal()));
 		}
 		
 		
 	}
-	
+	//CafeButton點長按的受委任者
+		class MyOnLongClickListener implements OnLongClickListener{
+
+			@Override
+			public boolean onLongClick(View view) {
+				// TODO Auto-generated method stub
+				
+			order.del(new Cafe(sizeIndex,iceIndex,sugarIndex,(Integer)view.getTag(),Cafe.cafePrice[(Integer)view.getTag()][sizeIndex]));
+				
+				tv_order.setText(order.toString());
+				tv_money.setText(String.valueOf(order.getSubtotal()));
+				return true;//如果傳回false則表示還沒結束會再點擊按鈕一次
+			}
+			
+			
+		}
 	private void updateRadioButtons(RadioGroup parent){
 		//取得 RadioGroup 內 RadioButton 數量
 		int radioButtonNumber = parent.getChildCount();
