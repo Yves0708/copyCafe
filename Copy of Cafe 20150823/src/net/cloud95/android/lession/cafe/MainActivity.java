@@ -99,13 +99,21 @@ public class MainActivity extends Activity {
 		icerb[3] = (RadioButton)findViewById(R.id.icerb4);
 		icerb[4] = (RadioButton)findViewById(R.id.icerb5);
 		cafebtns[0] =(Button) findViewById(R.id.cafebtn1);
+		cafebtns[0].setTag(0);
 		cafebtns[1] =(Button) findViewById(R.id.cafebtn2);
+		cafebtns[1].setTag(1);
 		cafebtns[2] =(Button) findViewById(R.id.cafebtn3);
+		cafebtns[2].setTag(2);
 		cafebtns[3] =(Button) findViewById(R.id.cafebtn4);
+		cafebtns[3].setTag(3);
 		cafebtns[4] =(Button) findViewById(R.id.cafebtn5);
+		cafebtns[4].setTag(4);
 		cafebtns[5] =(Button) findViewById(R.id.cafebtn6);
+		cafebtns[5].setTag(5);
 		cafebtns[6] =(Button) findViewById(R.id.cafebtn7);
+		cafebtns[6].setTag(6);
 		cafebtns[7] =(Button) findViewById(R.id.cafebtn8);
+		cafebtns[7].setTag(7);
 		tv_order =(TextView) findViewById(R.id.tv_order);
 		tv_money =(TextView) findViewById(R.id.tv_money);
 	}
@@ -149,35 +157,36 @@ public class MainActivity extends Activity {
 			if(temp_order.length()>0){
 				temp_order+="、";
 			}
-		int cafeType = -1;
-		switch(view.getId()){
-		case R.id.cafebtn1:
-			cafeType=0;
-			break;
-		case R.id.cafebtn2:
-			cafeType=1;
-			break;
-		case R.id.cafebtn3:
-			cafeType=2;
-			break;
-		case R.id.cafebtn4:
-			cafeType=3;
-			break;
-		case R.id.cafebtn5:
-			cafeType=4;
-			break;
-		case R.id.cafebtn6:
-			cafeType=5;
-			break;
-		case R.id.cafebtn7:
-			cafeType=6;
-			break;
-		case R.id.cafebtn8:
-			cafeType=7;
-			break;
-		
-		}
-			temp_order+=cafeName[cafeType]+"("+iceName[iceIndex]+"、"+sugarName[sugarIndex]+"、"+sizeName[sizeIndex]+")";
+//		int cafeType = -1;
+//		switch(view.getId()){
+//		case R.id.cafebtn1:
+//			cafeType=0;
+//			break;
+//		case R.id.cafebtn2:
+//			cafeType=1;
+//			break;
+//		case R.id.cafebtn3:
+//			cafeType=2;
+//			break;
+//		case R.id.cafebtn4:
+//			cafeType=3;
+//			break;
+//		case R.id.cafebtn5:
+//			cafeType=4;
+//			break;
+//		case R.id.cafebtn6:
+//			cafeType=5;
+//			break;
+//		case R.id.cafebtn7:
+//			cafeType=6;
+//			break;
+//		case R.id.cafebtn8:
+//			cafeType=7;
+//			break;
+//		
+//		}
+			//temp_order+=cafeName[cafeType]+"("+iceName[iceIndex]+"、"+sugarName[sugarIndex]+"、"+sizeName[sizeIndex]+")";
+			temp_order+=cafeName[(Integer)view.getTag()]+"("+iceName[iceIndex]+"、"+sugarName[sugarIndex]+"、"+sizeName[sizeIndex]+")";
 			tv_order.setText(temp_order);
 		}
 		
